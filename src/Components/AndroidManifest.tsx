@@ -20,26 +20,28 @@ const AndroidManifest = (props: Props) => {
       <uses-permission android:name="android.permission.INTERNET" />      
     `;
 
-  const addP = (toString: string, perm:  string, maxSdk?: number) => {
-    toString += `<uses-permission android:name="android.permission.${perm.toUpperCase()}" `;
+  const addP = (perm:  string, maxSdk?: number) => {
+    let s = `
+      <uses-permission android:name="android.permission.${perm.toUpperCase()}" `;
     if (maxSdk !== undefined) {
-      toString += `android:maxSdkVersion="${maxSdk}" `;
+      s += `android:maxSdkVersion="${maxSdk}" `;
     }
-    toString += `/>`;
-    console.log(toString);
+    s += `/>`;
+    return s;
   };
-  const addF = (toString: string, feature:  string) => {
-    toString += `<uses-feature android:name="android.permission.${feature.toUpperCase()}" android:required="false" />`;
+  const addF = (feature:  string) => {
+    return `
+      <uses-feature android:name="android.permission.${feature.toUpperCase()}" android:required="false" />`;
   };
   const has = (feature: string): boolean => {
     return Data.hasComponent(feature, props.components);
   };
 
   if (has('ble') || has('blehosting') || has('beacons')) {
-    addF(src, 'bluetooth_le');
-    addP(src, 'bluetooth', 30);
-    addP(src, 'bluetooth_admin', 30);
-    addP(src, 'bluetooth_connect');
+    src += addF('bluetooth_le');
+    src += addP('bluetooth', 30);
+    src += addP('bluetooth_admin', 30);
+    src += addP('bluetooth_connect');
   }
   if (has('ble') && !has('beacons')) {
     src += `<uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />`;
@@ -48,31 +50,32 @@ const AndroidManifest = (props: Props) => {
     src += `<uses-permission android:name="android.permission.BLUETOOTH_SCAN" />`;
   } 
   if (has('blehosting')) {
-    addP(src, 'BLUETOOTH_ADVERTISE');
+    src += addP( 'BLUETOOTH_ADVERTISE');
   }
   
   if (has('gps') || has('geofences')) {
-    addP(src, 'ACCESS_BACKGROUND_LOCATION');
-    addF(src, "location.gps");
-    addF(src, "location.network");
+    src += addP('ACCESS_BACKGROUND_LOCATION');
+    src += addF("location.gps");
+    src += addF("location.network");
   }
 
   if (has('ble') || has('gps') || has('geofencing') || has('beacons')) {
-    addP(src, 'ACCESS_COARSE_LOCATION');
-    addP(src, 'ACCESS_FINE_LOCATION');
+    src += addP('ACCESS_COARSE_LOCATION');
+    src += addP('ACCESS_FINE_LOCATION');
   }  
 
   if (has('notifications') || Data.usesPush(props.components) || has('gps') || has('ble') || has('beacons') || has('httptransfers')) {
-    addP(src, 'POST_NOTIFICATIONS');
+    src += addP('POST_NOTIFICATIONS');
   }  
   if (has('gps') || has('ble') || has('beacons') || has('httptransfers')) {
-    addP(src, 'FOREGROUND_SERVICE');
+    src += addP('FOREGROUND_SERVICE');
   }
   if (has('speech')) {
-    addP(src, "RECORD_AUDIO");
+    src += addP("RECORD_AUDIO");
   }
 
-  src += `</manifest>`;
+  src += `
+  </manifest>`;
   return (
     <>
       <SyntaxHighlighter language="xml" style={docco}>{src}</SyntaxHighlighter>

@@ -25,6 +25,8 @@ const App = () => {
       setComponents(arr => [...arr, e!]);
     }
   };
+  const selectAll = () => setComponents(ShinyComponents);
+  const unselectAll = () => setComponents([]);
 
   const isSelected = (shiny: ShinyComponent): boolean => components.find(c => c.id === shiny.id) !== undefined;
 
@@ -43,6 +45,10 @@ const App = () => {
           </Row>
         ))}
         </Container>
+        <div className="btn-container">
+          <button onClick={selectAll}>Select All</button>
+          <button onClick={unselectAll}>Unselect All</button>
+        </div>
         <Tabs
           defaultActiveKey="nugets"
           className="mb-3"      
