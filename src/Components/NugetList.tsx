@@ -1,5 +1,5 @@
 import { Col, Container, Row } from 'react-bootstrap';
-import type { ShinyComponent } from '../Types';
+import { DEFAULT_VERSION, ShinyComponent, ShinyComponents } from '../Types';
 import NugetBadge from './NugetBadge';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -10,10 +10,8 @@ export interface Props {
 }
 
 const NugetList = (props: Props) => {
-  if (props.components.length === 0) 
-    return (<div>No components</div>);
-
-  const nugets = props.components
+  
+  let nugets = props.components
     .filter(
       (thing, i, arr) => arr.findIndex(t => t.nuget === thing.nuget) === i
     )
@@ -21,6 +19,7 @@ const NugetList = (props: Props) => {
       (a.nuget > b.nuget) ? 1 : ((b.nuget > a.nuget) ? -1 : 0))
     );
 
+  nugets = [...nugets, { id: "hosting", nuget: "Shiny.Hosting.Maui", version: DEFAULT_VERSION } as ShinyComponent];
   let pr = "<ItemGroup>\r\n";
   nugets.map(c => {
     pr += `\t<PackageReference Include="${c.nuget}" version="${c.version}" />\r\n`;
