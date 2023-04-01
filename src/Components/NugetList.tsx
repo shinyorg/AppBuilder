@@ -1,6 +1,6 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import { DEFAULT_VERSION, ShinyComponent, ShinyComponents } from '../Types';
-import NugetBadge from './NugetBadge';
+import NugetBadge, { BadgeType } from './NugetBadge';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import CopyToClipboardButton from './CopyToClipboardButton';
@@ -33,7 +33,7 @@ const NugetList = (props: Props) => {
           <Row key={c.id}>
             <Col>{c.nuget}</Col>
             <Col><NugetBadge name={c.nuget} /></Col>
-            <Col><NugetBadge name={c.nuget} showDownloads={true} /></Col>
+            <Col><NugetBadge name={c.nuget} badgeType={BadgeType.Downloads} /></Col>
           </Row>
         ))}
       </Container>
